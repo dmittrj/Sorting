@@ -28,6 +28,27 @@ public:
 	}
 
 	template<typename T>
+	static float insertion(T arr[], int size) {
+		clock_t ts = clock();
+		for (int i = 0; i < size - 1; i++)
+		{
+			if (arr[i] > arr[i + 1]) {
+				for (int j = i; j >= 0; j--)
+				{
+					if (arr[j] > arr[j + 1]) {
+						sort::Swap(arr[j], arr[j + 1]);
+					}
+					else {
+						break;
+					}
+				}
+			}
+		}
+		clock_t te = clock();
+		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
+	}
+
+	template<typename T>
 	static float* test(float(* a)(T, int)) {
 		int arr_size = 0;
 		float* res = new float[10];
@@ -64,18 +85,38 @@ void printArray(int arr[], int size) {
 int main()
 {
     int arr[SIZE];
+	float (*x)(char* s, int a);
+	float* r;
+
+
+
 	for (int i = 0; i < SIZE; i++)
 	{
 		arr[i] = rand() % 40;
 	}
+	std::cout << "Bubble sort:" << std::endl;
 	printArray(arr, SIZE);
 	sort::bubble(arr, SIZE);
 	printArray(arr, SIZE);
-
-	float (*x)(char* s, int a);
 	x = sort::bubble;
+	r = sort::test(x);
+	for (int i = 0; i < 10; i++)
+	{
+		std::cout << r[i] << "s, ";
+	}
+	delete[] r;
 
-	float* r = sort::test(x);
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		arr[i] = rand() % 40;
+	}
+	std::cout << "\n\nInsertion sort:" << std::endl;
+	printArray(arr, SIZE);
+	sort::insertion(arr, SIZE);
+	printArray(arr, SIZE);
+	x = sort::insertion;
+	r = sort::test(x);
 	for (int i = 0; i < 10; i++)
 	{
 		std::cout << r[i] << "s, ";
