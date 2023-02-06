@@ -83,6 +83,39 @@ public:
 		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
 	}
 
+	/// <summary>
+	/// Cocktail shaker sort. Goes back and forth and swaps two next-door elements till the array unsorted
+	/// </summary>
+	/// <typeparam name="T">any type with the comparison operators overloaded</typeparam>
+	/// <param name="arr">- array to sort</param>
+	/// <param name="size">- size of array</param>
+	/// <returns>sorting time taken</returns>
+	template<typename T>
+	static float cocktail_shaker(T arr[], int size) {
+		clock_t ts = clock();
+		bool swapped = false;
+		do
+		{
+			swapped = false;
+			for (int i = 0; i < size - 1; i++)
+			{
+				if (arr[i] > arr[i + 1]) {
+					sort::Swap(arr[i], arr[i + 1]);
+					swapped = true;
+				}
+			}
+			for (int i = size - 2; i >= 0; i--)
+			{
+				if (arr[i] > arr[i + 1]) {
+					sort::Swap(arr[i], arr[i + 1]);
+					swapped = true;
+				}
+			}
+		} while (swapped);
+		clock_t te = clock();
+		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
+	}
+
 	template<typename T>
 	static float* test(float(* a)(T, int)) {
 		int arr_size = 0;
@@ -151,6 +184,23 @@ int main()
 	sort::insertion(arr, SIZE);
 	printArray(arr, SIZE);
 	x = sort::insertion;
+	r = sort::test(x);
+	for (int i = 0; i < 10; i++)
+	{
+		std::cout << r[i] << "s, ";
+	}
+	delete[] r;
+
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		arr[i] = rand() % 40;
+	}
+	std::cout << "\n\nCocktail shaker sort:" << std::endl;
+	printArray(arr, SIZE);
+	sort::cocktail_shaker(arr, SIZE);
+	printArray(arr, SIZE);
+	x = sort::cocktail_shaker;
 	r = sort::test(x);
 	for (int i = 0; i < 10; i++)
 	{
