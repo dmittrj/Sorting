@@ -116,6 +116,44 @@ public:
 		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
 	}
 
+	/// <summary>
+	/// Quick sort. Divides the array into several parts and sorts them individually
+	/// </summary>
+	/// <typeparam name="T">any type with the comparison operators overloaded</typeparam>
+	/// <param name="arr">- array to sort</param>
+	/// <param name="size">- size of array</param>
+	/// <returns>sorting time taken</returns>
+	template<typename T>
+	static float quick(T arr[], int size, int call) {
+		if (size <= 1) return 0;
+		if (size == 2) {
+			if (arr[0] > arr[1]) sort::Swap(arr[0], arr[1]);
+			return 0;
+		}
+		if (call > 1000) {
+			return sort::insertion(arr, size);
+		}
+		clock_t ts = clock();
+		int pivot = arr[size - 1];
+		int wall = -1;
+		for (int i = 0; i < size; i++)
+		{
+			if (arr[i] <= pivot) {
+				sort::Swap(arr[++wall], arr[i]);
+			}
+		}
+		sort::quick(arr, wall, call + 1);
+		sort::quick(arr + wall + 1, size - wall - 1, call + 1);
+		
+		clock_t te = clock();
+		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
+	}
+
+	template<typename T>
+	static float quick(T arr[], int size) {
+		return sort::quick(arr, size, 0);
+	}
+
 	template<typename T>
 	static float* test(float(* a)(T, int)) {
 		int arr_size = 0;
@@ -201,6 +239,23 @@ int main()
 	sort::cocktail_shaker(arr, SIZE);
 	printArray(arr, SIZE);
 	x = sort::cocktail_shaker;
+	r = sort::test(x);
+	for (int i = 0; i < 10; i++)
+	{
+		std::cout << r[i] << "s, ";
+	}
+	delete[] r;
+
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		arr[i] = rand() % 40;
+	}
+	std::cout << "\n\nQuick sort:" << std::endl;
+	printArray(arr, SIZE);
+	sort::quick(arr, SIZE);
+	printArray(arr, SIZE);
+	x = sort::quick;
 	r = sort::test(x);
 	for (int i = 0; i < 10; i++)
 	{
