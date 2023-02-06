@@ -124,32 +124,6 @@ public:
 	/// <param name="size">- size of array</param>
 	/// <returns>sorting time taken</returns>
 	template<typename T>
-	static float quick(T arr[], int size, int call) {
-		if (size <= 1) return 0;
-		if (size == 2) {
-			if (arr[0] > arr[1]) sort::Swap(arr[0], arr[1]);
-			return 0;
-		}
-		if (call > 1000) {
-			return sort::insertion(arr, size);
-		}
-		clock_t ts = clock();
-		int pivot = arr[size - 1];
-		int wall = -1;
-		for (int i = 0; i < size; i++)
-		{
-			if (arr[i] <= pivot) {
-				sort::Swap(arr[++wall], arr[i]);
-			}
-		}
-		sort::quick(arr, wall, call + 1);
-		sort::quick(arr + wall + 1, size - wall - 1, call + 1);
-		
-		clock_t te = clock();
-		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
-	}
-
-	template<typename T>
 	static float quick(T arr[], int size) {
 		return sort::quick(arr, size, 0);
 	}
@@ -177,6 +151,28 @@ private:
 		T temp = _left;
 		_left = _right;
 		_right = temp;
+	}
+
+	template<typename T>
+	static float quick(T arr[], int size, int call) {
+		if (size <= 1) return 0;
+		if (call > 1000 || size < 5000) {
+			return sort::insertion(arr, size);
+		}
+		clock_t ts = clock();
+		int pivot = arr[size - 1];
+		int wall = -1;
+		for (int i = 0; i < size; i++)
+		{
+			if (arr[i] <= pivot) {
+				sort::Swap(arr[++wall], arr[i]);
+			}
+		}
+		sort::quick(arr, wall, call + 1);
+		sort::quick(arr + wall + 1, size - wall - 1, call + 1);
+
+		clock_t te = clock();
+		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
 	}
 };
 
