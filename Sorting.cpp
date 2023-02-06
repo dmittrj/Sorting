@@ -55,6 +55,34 @@ public:
 		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
 	}
 
+	/// <summary>
+	/// Bogo sort. Swaps two random elements till array unsorted
+	/// </summary>
+	/// <typeparam name="T">any type with the comparison operators overloaded</typeparam>
+	/// <param name="arr">- array to sort</param>
+	/// <param name="size">- size of array</param>
+	/// <returns>sorting time taken</returns>
+	template<typename T>
+	static float bogo(T arr[], int size) {
+		clock_t ts = clock();
+		srand(size);
+		bool unsorted = true;
+		while (unsorted)
+		{
+			unsorted = false;
+			sort::Swap(arr[rand() % size], arr[rand() % size]);
+			for (int i = 0; i < size - 1; i++)
+			{
+				if (arr[i] > arr[i + 1]) {
+					unsorted = true;
+					break;
+				}
+			}
+		}
+		clock_t te = clock();
+		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
+	}
+
 	template<typename T>
 	static float* test(float(* a)(T, int)) {
 		int arr_size = 0;
@@ -82,7 +110,7 @@ private:
 };
 
 void printArray(int arr[], int size) {
-	for (int i = 0; i < SIZE; i++)
+	for (int i = 0; i < size; i++)
 	{
 		std::cout << arr[i] << ", ";
 	}
@@ -129,4 +157,19 @@ int main()
 		std::cout << r[i] << "s, ";
 	}
 	delete[] r;
+
+
+
+
+
+
+	int arrbogo[10];
+	for (int i = 0; i < 10; i++)
+	{
+		arrbogo[i] = rand() % 40;
+	}
+	std::cout << "\n\nBogo sort:" << std::endl;
+	printArray(arrbogo, 10);
+	std::cout << "Time taken: " << sort::bogo(arrbogo, 10) << std::endl;
+	printArray(arrbogo, 10);
 }
