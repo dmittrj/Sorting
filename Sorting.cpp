@@ -27,6 +27,13 @@ public:
 		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
 	}
 
+	/// <summary>
+	/// Insertion sort. Moves every element into correct place into the left (sorted) side
+	/// </summary>
+	/// <typeparam name="T">any type with the comparison operators overloaded</typeparam>
+	/// <param name="arr">- array to sort</param>
+	/// <param name="size">- size of array</param>
+	/// <returns>sorting time taken</returns>
 	template<typename T>
 	static float insertion(T arr[], int size) {
 		clock_t ts = clock();
