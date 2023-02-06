@@ -128,6 +128,60 @@ public:
 		return sort::quick(arr, size, 0);
 	}
 
+	/// <summary>
+	/// Merge sort. Brakes array into lots of small arrays, sorts them and merges together
+	/// </summary>
+	/// <typeparam name="T">any type with the comparison operators overloaded</typeparam>
+	/// <param name="arr">- array to sort</param>
+	/// <param name="size">- size of array</param>
+	/// <returns>sorting time taken</returns>
+	template<typename T>
+	static float merge(T arr[], int size) {
+		clock_t ts = clock();
+		if (size == 2 && arr[0] > arr[1]) {
+			sort::Swap(arr[0], arr[1]);
+		}
+		if (size > 2) {
+			T* arrcopy = new T[size];
+			if (arrcopy == nullptr) {
+				return -1;
+			}
+			sort::merge(arr, size / 2);
+			sort::merge(arr + size / 2, size - size / 2);
+			int i = 0, j = 0;
+			for (int k = 0; k < size; k++)
+			{
+				if (i >= size / 2) {
+					for (int l = size / 2 + j; l < size; l++)
+					{
+						arrcopy[k++] = arr[l];
+					}
+					break;
+				}
+				if (j >= size - size / 2) {
+					for (int l = i; l < size / 2; l++)
+					{
+						arrcopy[k++] = arr[l];
+					}
+					break;
+				}
+				if (arr[i] < arr[size / 2 + j]) {
+					arrcopy[k] = arr[i++];
+				}
+				else {
+					arrcopy[k] = arr[size / 2 + j++];
+				}
+			}
+			for (int k = 0; k < size; k++)
+			{
+				arr[k] = arrcopy[k];
+			}
+			delete[] arrcopy;
+		}
+		clock_t te = clock();
+		return ((float)(te - ts)) / (float)CLOCKS_PER_SEC;
+	}
+
 	template<typename T>
 	static float* test(float(* a)(T, int)) {
 		int arr_size = 0;
@@ -189,6 +243,8 @@ int main()
     int arr[SIZE];
 	float (*x)(char* s, int a);
 	float* r;
+
+	srand(42);
 
 
 
@@ -252,6 +308,23 @@ int main()
 	sort::quick(arr, SIZE);
 	printArray(arr, SIZE);
 	x = sort::quick;
+	r = sort::test(x);
+	for (int i = 0; i < 10; i++)
+	{
+		std::cout << r[i] << "s, ";
+	}
+	delete[] r;
+
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		arr[i] = rand() % 40;
+	}
+	std::cout << "\n\nMerge sort:" << std::endl;
+	printArray(arr, SIZE);
+	sort::merge(arr, SIZE);
+	printArray(arr, SIZE);
+	x = sort::merge;
 	r = sort::test(x);
 	for (int i = 0; i < 10; i++)
 	{
